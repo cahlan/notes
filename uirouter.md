@@ -6,6 +6,8 @@ It can be installed using bower or npm:
 
 	bower install angular-ui-router
 	npm install angular-ui-router
+	
+It can also be embedded by using a `<script>` include via a CDN such [cdnjs.com](http://cdnjs.com/libraries/angular-ui-router)
 
 ###Use UI-Router
 1. reference angular-ui-router.js in your html page.
@@ -21,6 +23,7 @@ It can be installed using bower or npm:
 
 Example:
 
+```javascript
 	var app = angular.module('app', ['ui.router']); // add ui.router as dependency to module
 	app.config(function ($stateProvider) { // inject $stateProvider into the module's config function
 		$stateProvider
@@ -36,41 +39,52 @@ Example:
 				templateUrl: 'about/about.html' // could be a function that returns the path to the view
 			}) 
 	});
+```
 
 ###Activate a State
 
 ####From JavaScript
 Inject the $state service into the controller and use $state.go('state name') to navigate to a state.
 
+```javascript
 	$state.go('about');
+```
 
 ####From html
 Link to a state from any anchor tag using the url or the name of the state:
 
+```html
 	<!-- using the name of the state replace the href attribute with ui-sref -->
 	<a ui-sref="home">Home</a> 
 	
 	<!-- using the url, remember to add the # and corresponding forward slash (/)-->
 	<a href="#/about">About</a> 
+```
 
 ####Useful $state Service Methods
 
+```javascript
 	$state.go('about'); // go to the about state
 	$state.reload(); // force the current state to be reloaded
 	$state.get(); // retrieve an array of all configuration objects for the application states
 	$state.get('about') // pass a state name to get the configuration object for that state
+```
 
 ####Useful $state properties
 
+```javascript
 	$state.current // returns a reference to the currently active state 
 	$state.params // returns an object containin the parameters for the current state
+```
 
 ####Useful $state Events
 
+```javascript
 	$stateChangeStart 	// fired when starting to transition to a new state 
 	$stateChangeSuccess	// fired if the transition to the new state succeeded
 	$stateChangeError	// fired if the transition to the new state failed
 	$stateNotFound		// fired if the state was not found
+```
 
 ###Working with Parameters
 States can set and recieve paramenters. 
@@ -79,16 +93,19 @@ States can set and recieve paramenters.
 
 Add the name of the parameter to the url prefixing it with a colon:
 
+```javascript
 	.state('users', {
 		url: '/users/:id', // in this case the name of the parameter is id
 		controller: 'AppController',
 		
 		// ... other properties of the state configuration object
 	});
+```
 
 Use curly braces and the name of the parameter or a regular expression. If a regular expression is used, 
 the parameter is only set if the value provided matches the regular expression (without the slashes):
 
+```javascript
 	.state('users', {
 		url: '/users/{id}', // in this case the name of the parameter is id
 		url: '/users/{id:[0-9]{1,8}}, // in this case will only match for id of 1 to 8 numbers
@@ -96,9 +113,11 @@ the parameter is only set if the value provided matches the regular expression (
 		
 		// ... other properties of the state configuration object
 	});
+```
 
 Use the params property on the state configuration object:
 
+```javascript
 	.state('users', {
 		url: '/users',
 		params: {
@@ -113,37 +132,46 @@ Use the params property on the state configuration object:
 		controller: 'AppController',
 		// ... other properties of the state configuration object		
 	});
+```
 
 ####Passing Parameters
 To pass the parameters on the url, just add the value for the paramenters after the route:
 
+```javascript
 	http://localhost:8080/#/users/abcd // $stateParams.id will have the value abcd
 	
 	// below, $stateParams.id has the value 1234, $stateParams.month has the value october
-	http://mysite.com/#/expenses/1234/october	 
+	http://mysite.com/#/expenses/1234/october
+```	 
 
 To pass parameters using ui-sref, provide an object in parenthesis containing all the parameters:
 
+```html
 	<!-- assuming we have a user object on the scope with an id property we can write -->
 	<a ui-sref="users({ id: user.id })">View User Details</a> <!-- ui-router builds the correct url  -->	
 	<a ui-sref="expenses({ id: 1234, month: 'march' })">View Expenses</a> <!-- or we can just pass the values  -->	
+```
 
 To pass parameters using href, just concatenate the base url with the parameters:
 
+```html
 	<a href="#/users/{{ user.id }}">View User Details</a> <!-- from an object or value on the scope -->	
-	<a href="#/expenses/1234/march">View Expenses</a> <!-- passing the value directly -->	
+	<a href="#/expenses/1234/march">View Expenses</a> <!-- passing the value directly -->
+```	
 
 ####Accessing Parameters on the Controller	
 The parameters are added to the $stateParams object into a properties named after the parameters. 
 In the examples above, the parameter will be stored on **$stateParams.id** and can be retrieved 
 by the controller associated with the state.
 
+```javascript
 	function AppController ($scope, $stateParams) { // inject $stateParams
 	
 		// the parameters passed into the state become properties on the $stateParams service
 		$scope.userId = $stateParams.id; // in this case the property name is id (from :id on the state configuration object)
 		$scope.month = $stateParams.month; // we can also access the month parameter
 	}
+```
 
 ###Resolve Property
 We can add a resolve object as a property on the state configuration object. The resolve property is used to specify a set of 
@@ -151,6 +179,7 @@ dependencies we can inject into the controller. Each dependency is defined as a 
 implemented by calling a function that returns a promise. The promise will be resolved before transitioning to the state.
 This ensures that the data is available to the controller before the state changes.
 
+```javascript
 	.state('users', {
 		// ... other properties
 		
@@ -160,17 +189,21 @@ This ensures that the data is available to the controller before the state chang
 			} // ui-router will wait until the promise is resolved before changing state
 		}
 	});
+```
 
 We use the dependencies declared on the resolve object by injecting them into the controller.
 
+```javascript
 	function UserController ($scope, accounts) { // inject the accounts property from the resolve object. Names must match
 		$scope.accounts = accounts; // the accounts promise was resolved and the value can be assigned to a scope variable
 	}
+```
 
 ###Passing Arbitrary Data to States
 It is possible to pass any data to a state by adding a properties to the state configuration object. 
 The properties added will be passed to the controller as properties in the $state.current object:
 
+```
 	.state('users', {
 		// ... other properties
 		
@@ -183,14 +216,16 @@ The properties added will be passed to the controller as properties in the $stat
 			catName: 'rafles'
 		}
 	});
+```
 
 To retrieve the data in the controller:
 
+```
 	function UserController ($scope) { 
 		$scope.city = $state.current.data.city; // 'Provo'
 		$scope.secrets = $state.current.secrets; // { favoriteColor: 'blue', catName: 'rafles' }
 	}
-
+```
 
 **The properties added to any state are inherited by (added to the prototype of) child states.**
 
@@ -198,6 +233,7 @@ To retrieve the data in the controller:
 Use the onEnter and onExit properties of the state configuration to specify callback functions that will execute when 
 entering or exiting the state.
 
+```
 	.state('users', {
 		// ... other properties
 		
@@ -208,4 +244,5 @@ entering or exiting the state.
 			$log('Exiting users state'); // perform any action
 		}
 	});
+```
 
