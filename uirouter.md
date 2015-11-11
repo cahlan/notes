@@ -203,7 +203,7 @@ We use the dependencies declared on the resolve object by injecting them into th
 It is possible to pass any data to a state by adding a properties to the state configuration object. 
 The properties added will be passed to the controller as properties in the $state.current object:
 
-```
+```javascript
 	.state('users', {
 		// ... other properties
 		
@@ -220,7 +220,7 @@ The properties added will be passed to the controller as properties in the $stat
 
 To retrieve the data in the controller:
 
-```
+```javascript
 	function UserController ($scope) { 
 		$scope.city = $state.current.data.city; // 'Provo'
 		$scope.secrets = $state.current.secrets; // { favoriteColor: 'blue', catName: 'rafles' }
@@ -233,7 +233,7 @@ To retrieve the data in the controller:
 Use the onEnter and onExit properties of the state configuration to specify callback functions that will execute when 
 entering or exiting the state.
 
-```
+```javascript
 	.state('users', {
 		// ... other properties
 		
