@@ -108,7 +108,7 @@ the parameter is only set if the value provided matches the regular expression (
 ```javascript
 	.state('users', {
 		url: '/users/{id}', // in this case the name of the parameter is id
-		url: '/users/{id:[0-9]{1,8}}, // in this case will only match for id of 1 to 8 numbers
+		url: '/users/{id:[0-9]{1,8}}', // in this case will only match for id of 1 to 8 numbers
 		controller: 'AppController',
 		
 		// ... other properties of the state configuration object
